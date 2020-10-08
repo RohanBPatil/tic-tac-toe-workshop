@@ -17,8 +17,7 @@ public class TicTacToe {
 	/**
 	 * UC 2
 	 */
-	public String chooseChar() {
-		Scanner scanner = new Scanner(System.in);
+	public String chooseChar(Scanner scanner) {
 		System.out.println("Select one x or o");
 		String playerChar = scanner.nextLine();
 		return playerChar;
@@ -62,7 +61,7 @@ public class TicTacToe {
 		Scanner scanner = new Scanner(System.in);
 		
 		while (true) {
-			playerChar = game.chooseChar();
+			playerChar = game.chooseChar(scanner);
 			compChar = (playerChar.equals("x")) ? "o" : "x";
 			if (playerChar.equals("o") || playerChar.equals("x"))
 				break;

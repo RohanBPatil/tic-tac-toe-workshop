@@ -20,8 +20,17 @@ public class TicTacToe {
 	
 	public static void main(String[] args) {
 		TicTacToe game = new TicTacToe();
-		String playerChar = game.chooseChar();
-		String compChar = (playerChar.equals("x"))? "o" : "x";
+		String playerChar;
+		String compChar;
+		
+		while(true) {
+			playerChar = game.chooseChar();
+			compChar = (playerChar.equals("x"))? "o" : "x";
+			if(playerChar.equals("o") || playerChar.equals("x"))
+				break;
+			System.out.println("Entered invalid character!!");
+		}
+		
 		System.out.println(compChar);
 	}
 }

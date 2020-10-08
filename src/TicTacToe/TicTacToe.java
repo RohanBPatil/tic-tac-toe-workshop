@@ -18,6 +18,14 @@ public class TicTacToe {
 		return playerChar;
 	}
 	
+	public void showBoard() {
+		for(int i = 1; i < board.length; i++) {
+			System.out.print(board[i] + "	");
+			if(i % 3 == 0)
+				System.out.println();
+		}
+	}
+	
 	public static void main(String[] args) {
 		TicTacToe game = new TicTacToe();
 		String playerChar;
@@ -30,7 +38,9 @@ public class TicTacToe {
 				break;
 			System.out.println("Entered invalid character!!");
 		}
+		System.out.println("Your symbol is : "+playerChar);
+		System.out.println("Computer's symbol is : " + compChar);
 		
-		System.out.println(compChar);
+		game.showBoard();
 	}
 }

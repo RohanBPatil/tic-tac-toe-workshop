@@ -8,7 +8,7 @@ public class TicTacToe {
 	public TicTacToe() {
 		board = new String[10];
 		for(int i = 0; i < board.length; i++)
-			board[i] = "";
+			board[i] = "x";
 	}
 	
 	public String chooseChar() {
@@ -20,9 +20,11 @@ public class TicTacToe {
 	
 	public void showBoard() {
 		for(int i = 1; i < board.length; i++) {
-			System.out.print(board[i] + "	");
-			if(i % 3 == 0)
+			System.out.print(board[i] + "|");
+			if(i % 3 == 0) {
+				System.out.println("\n______");
 				System.out.println();
+			}
 		}
 	}
 	

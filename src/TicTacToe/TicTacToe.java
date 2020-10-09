@@ -130,7 +130,7 @@ public class TicTacToe {
 	}
 
 	/**
-	 * modified for UC 10
+	 * modified for UC 10, UC 11, UC 13
 	 */
 	public static void compMove() {
 		while (true) {
@@ -190,38 +190,46 @@ public class TicTacToe {
 		final int playerNum = 0;
 //		final int compNum = 1;
 		Scanner scanner = new Scanner(System.in);
+		String anotherGame;
+		do {
+			new TicTacToe();
+			countMoves = 0;
+			chooseChar(scanner);
+			int first = toss();
+			if (first == playerNum)
+				System.out.println("You play first");
+			else
+				System.out.println("Computer will play first");
+			showBoard();
 
-		new TicTacToe();
-		chooseChar(scanner);
-		int first = toss();
-		if (first == playerNum)
-			System.out.println("You play first");
-		else
-			System.out.println("Computer will play first");
-		showBoard();
+			while (true) {
+				if (first % 2 == playerNum) {
+					makeMove(scanner);
+					first++;
+					if (checkWinner(board, playerChar) == 1) {
+						System.out.println("Congratulations!! You won this game");
+						break;
+					} else if (checkWinner(board, playerChar) == 2) {
+						System.out.println("No one won this game");
+						break;
+					}
+				}
 
-		while (true) {
-			if (first % 2 == playerNum) {
-				makeMove(scanner);
-				first++;
-				if (checkWinner(board, playerChar) == 1) {
-					System.out.println("Congratulations!! You won this game");
-					break;
-				} else if (checkWinner(board, playerChar) == 2) {
-					System.out.println("No one won this game");
+				else {
+					compMove();
+					first++;
+					if (checkWinner(board, compChar) == 1) {
+						System.out.println("COMPUTER won this game");
+						break;
+					} else if (checkWinner(board, compChar) == 2) {
+						System.out.println("No one won this game");
+						break;
+					}
 				}
 			}
-
-			else {
-				compMove();
-				first++;
-				if (checkWinner(board, compChar) == 1) {
-					System.out.println("COMPUTER won this game");
-					break;
-				} else if (checkWinner(board, compChar) == 2) {
-					System.out.println("No one won this game");
-				}
-			}
-		}
+			scanner.nextLine();
+			System.out.println("DO YOU WANT TO PLAY ANOTHER GAME?  YES/NO");
+			anotherGame = scanner.nextLine();
+		} while (anotherGame.equalsIgnoreCase("YES"));
 	}
 }

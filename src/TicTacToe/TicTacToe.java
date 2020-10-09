@@ -76,7 +76,6 @@ public class TicTacToe {
 		}
 	}
 
-	
 	/**
 	 * UC 6
 	 * 
@@ -86,9 +85,9 @@ public class TicTacToe {
 		return (int) Math.floor(Math.random() * 10) % 2;
 	}
 
-	
 	/**
 	 * UC 7
+	 * 
 	 * @param checkBoard
 	 * @param symbol
 	 * @return
@@ -108,40 +107,67 @@ public class TicTacToe {
 			return 2;
 		return 0;
 	}
-	
+
 	/**
-	 * UC 8
-	 * modified for UC 9
+	 * UC 8 modified for UC 9
+	 * 
+	 * 
 	 * @return
 	 */
 	public static int winPosition(String symbol) {
 		String[] copyBoard = board.clone();
-		
-		for(int i = 1; i<copyBoard.length; i++) {
-			if(copyBoard[i].equals(" ")) {
+
+		for (int i = 1; i < copyBoard.length; i++) {
+			if (copyBoard[i].equals(" ")) {
 				copyBoard[i] = symbol;
-				if(checkWinner(copyBoard, symbol) == 1) {
+				if (checkWinner(copyBoard, symbol) == 1) {
 					return i;
-				}
-				else
+				} else
 					copyBoard[i] = " ";
 			}
 		}
 		return 0;
 	}
-	
+
+	/**
+	 * modified for UC 10
+	 */
 	public static void compMove() {
 		while (true) {
-			int position = (int) Math.floor(Math.random() * 10) % 9 + 1;
-			int winPos = winPosition(compChar);
-			if(winPos != 0) {
-				position = winPos;
-			}
+			int position = 0;
+			int[] corners = { 1, 3, 7, 9 };
+
+			int winPosComp = winPosition(compChar);
 			int winPosPlayer = winPosition(playerChar);
-			if(winPosPlayer != 0 && winPos == 0) {								// computer will choose that position only if computer is not wining
+
+			if (winPosComp != 0) {
+				position = winPosComp;
+			} else if (winPosPlayer != 0) { // computer will choose that position only if computer is not wining
 				position = winPosPlayer;
+			} else {
+				// counting number of empty corners
+				int countEmptyCorners = 0;
+				for (int i = 0; i < corners.length; i++) {
+					if (board[corners[i]].equals(" ")) {
+						countEmptyCorners++;
+					}
+				}
+				System.out.println("empty corners : " + countEmptyCorners);
+				// if no one is wining and all corners are filled then selecting random position
+				if (countEmptyCorners == 0) {
+					position = (int) Math.floor(Math.random() * 10) % 9 + 1;
+				}
+				// if corner is empty then selecting random corner
+				else {
+					while (true) {
+						position = corners[(int) Math.floor(Math.random() * 10) % 4];
+						System.out.println("corner selected : " + position);
+						if (board[position].equals(" "))
+							break;
+					}
+				}
 			}
-			
+
 			if (board[position].equals(" ")) {
 				board[position] = compChar;
 				System.out.println("Computer made move.");
@@ -151,7 +177,6 @@ public class TicTacToe {
 			}
 		}
 	}
-
 
 	public static void main(String[] args) {
 		final int playerNum = 0;
@@ -166,8 +191,7 @@ public class TicTacToe {
 		else
 			System.out.println("Computer will play first");
 		showBoard();
-		
-		
+
 		while (true) {
 			if (first % 2 == playerNum) {
 				makeMove(scanner);

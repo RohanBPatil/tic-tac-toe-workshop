@@ -76,19 +76,7 @@ public class TicTacToe {
 		}
 	}
 
-	public static void compMove() {
-		while (true) {
-			int position = (int) Math.floor(Math.random() * 10) % 9 + 1;
-			if (board[position].equals(" ")) {
-				board[position] = compChar;
-				System.out.println("Computer made move.");
-				countMoves++;
-				showBoard();
-				break;
-			}
-		}
-	}
-
+	
 	/**
 	 * UC 6
 	 * 
@@ -98,27 +86,66 @@ public class TicTacToe {
 		return (int) Math.floor(Math.random() * 10) % 2;
 	}
 
+	
 	/**
 	 * UC 7
-	 * 
+	 * @param checkBoard
 	 * @param symbol
 	 * @return
 	 */
-	public static int checkWinner(String symbol) {
+	public static int checkWinner(String[] checkBoard, String symbol) {
+		if ((symbol.equals(checkBoard[1]) && symbol.equals(checkBoard[2]) && symbol.equals(checkBoard[3]))
+				|| (symbol.equals(checkBoard[4]) && symbol.equals(checkBoard[5]) && symbol.equals(checkBoard[6]))
+				|| (symbol.equals(checkBoard[7]) && symbol.equals(checkBoard[8]) && symbol.equals(checkBoard[9]))
+				|| (symbol.equals(checkBoard[1]) && symbol.equals(checkBoard[4]) && symbol.equals(checkBoard[7]))
+				|| (symbol.equals(checkBoard[2]) && symbol.equals(checkBoard[5]) && symbol.equals(checkBoard[8]))
+				|| (symbol.equals(checkBoard[3]) && symbol.equals(checkBoard[6]) && symbol.equals(checkBoard[9]))
+				|| (symbol.equals(checkBoard[1]) && symbol.equals(checkBoard[5]) && symbol.equals(checkBoard[9]))
+				|| (symbol.equals(checkBoard[3]) && symbol.equals(checkBoard[5]) && symbol.equals(checkBoard[7]))) {
+			return 1;
+		}
 		if (countMoves == 9)
 			return 2;
-		if ((symbol.equals(board[1]) && symbol.equals(board[2]) && symbol.equals(board[3]))
-				|| (symbol.equals(board[4]) && symbol.equals(board[5]) && symbol.equals(board[6]))
-				|| (symbol.equals(board[7]) && symbol.equals(board[8]) && symbol.equals(board[9]))
-				|| (symbol.equals(board[1]) && symbol.equals(board[4]) && symbol.equals(board[7]))
-				|| (symbol.equals(board[2]) && symbol.equals(board[5]) && symbol.equals(board[8]))
-				|| (symbol.equals(board[3]) && symbol.equals(board[6]) && symbol.equals(board[9]))
-				|| (symbol.equals(board[1]) && symbol.equals(board[5]) && symbol.equals(board[9]))
-				|| (symbol.equals(board[3]) && symbol.equals(board[5]) && symbol.equals(board[7]))) {
-			return 1;
+		return 0;
+	}
+	
+	/**
+	 * UC 8
+	 * @return
+	 */
+	public static int winPosition() {
+		String[] copyBoard = board.clone();
+		
+		for(int i = 1; i<copyBoard.length; i++) {
+			if(copyBoard[i].equals(" ")) {
+				copyBoard[i] = compChar;
+				if(checkWinner(copyBoard, compChar) == 1) {
+					return i;
+				}
+				else
+					copyBoard[i] = " ";
+			}
 		}
 		return 0;
 	}
+	
+	public static void compMove() {
+		while (true) {
+			int position = (int) Math.floor(Math.random() * 10) % 9 + 1;
+			int winPos = winPosition();
+			if(winPos != 0) {
+				position = winPos;
+			}
+			if (board[position].equals(" ")) {
+				board[position] = compChar;
+				System.out.println("Computer made move.");
+				countMoves++;
+				showBoard();
+				return;
+			}
+		}
+	}
+
 
 	public static void main(String[] args) {
 		final int playerNum = 0;
@@ -132,15 +159,17 @@ public class TicTacToe {
 			System.out.println("You play first");
 		else
 			System.out.println("Computer will play first");
-
+		showBoard();
+		
+		
 		while (true) {
 			if (first % 2 == playerNum) {
 				makeMove(scanner);
 				first++;
-				if (checkWinner(playerChar) == 1) {
+				if (checkWinner(board, playerChar) == 1) {
 					System.out.println("Congratulations!! You won this game");
 					break;
-				} else if (checkWinner(playerChar) == 2) {
+				} else if (checkWinner(board, playerChar) == 2) {
 					System.out.println("No one won this game");
 				}
 			}
@@ -148,10 +177,10 @@ public class TicTacToe {
 			else {
 				compMove();
 				first++;
-				if (checkWinner(compChar) == 1) {
+				if (checkWinner(board, compChar) == 1) {
 					System.out.println("COMPUTER won this game");
 					break;
-				} else if (checkWinner(compChar) == 2) {
+				} else if (checkWinner(board, compChar) == 2) {
 					System.out.println("No one won this game");
 				}
 			}

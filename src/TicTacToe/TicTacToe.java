@@ -111,15 +111,16 @@ public class TicTacToe {
 	
 	/**
 	 * UC 8
+	 * modified for UC 9
 	 * @return
 	 */
-	public static int winPosition() {
+	public static int winPosition(String symbol) {
 		String[] copyBoard = board.clone();
 		
 		for(int i = 1; i<copyBoard.length; i++) {
 			if(copyBoard[i].equals(" ")) {
-				copyBoard[i] = compChar;
-				if(checkWinner(copyBoard, compChar) == 1) {
+				copyBoard[i] = symbol;
+				if(checkWinner(copyBoard, symbol) == 1) {
 					return i;
 				}
 				else
@@ -132,10 +133,15 @@ public class TicTacToe {
 	public static void compMove() {
 		while (true) {
 			int position = (int) Math.floor(Math.random() * 10) % 9 + 1;
-			int winPos = winPosition();
+			int winPos = winPosition(compChar);
 			if(winPos != 0) {
 				position = winPos;
 			}
+			int winPosPlayer = winPosition(playerChar);
+			if(winPosPlayer != 0 && winPos == 0) {								// computer will choose that position only if computer is not wining
+				position = winPosPlayer;
+			}
+			
 			if (board[position].equals(" ")) {
 				board[position] = compChar;
 				System.out.println("Computer made move.");

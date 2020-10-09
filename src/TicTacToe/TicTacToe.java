@@ -152,16 +152,24 @@ public class TicTacToe {
 						countEmptyCorners++;
 					}
 				}
-				System.out.println("empty corners : " + countEmptyCorners);
-				// if no one is wining and all corners are filled then selecting random position
+				// if no one is wining then selecting corner
 				if (countEmptyCorners == 0) {
-					position = (int) Math.floor(Math.random() * 10) % 9 + 1;
+					// if corner is not available then taking center
+					if (board[5] == " ")
+						position = 5;
+					// if center is not available then taking side
+					else {
+						while (true) {
+							position = (int) Math.floor(Math.random() * 10) % 9 + 1;
+							if (board[position].equals(" "))
+								break;
+						}
+					}
 				}
 				// if corner is empty then selecting random corner
 				else {
 					while (true) {
 						position = corners[(int) Math.floor(Math.random() * 10) % 4];
-						System.out.println("corner selected : " + position);
 						if (board[position].equals(" "))
 							break;
 					}

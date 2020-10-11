@@ -8,16 +8,17 @@ public class TicTacToe {
 	public static int countMoves = 0;
 
 	/**
-	 * Constructor
+	 * UC 1 creating board with empty spaces and number of moves will be 0 initially
 	 */
 	public TicTacToe() {
 		board = new String[10];
 		for (int i = 0; i < board.length; i++)
 			board[i] = " ";
+		countMoves = 0;
 	}
 
 	/**
-	 * UC 2
+	 * UC 2 allowing player to choose character
 	 */
 	public static void chooseChar(Scanner scanner) {
 		while (true) {
@@ -34,7 +35,7 @@ public class TicTacToe {
 	}
 
 	/**
-	 * UC 3
+	 * UC 3 showing current status of board
 	 */
 	public static void showBoard() {
 		System.out.println("-----");
@@ -49,7 +50,7 @@ public class TicTacToe {
 	}
 
 	/**
-	 * UC 4 and 5
+	 * UC 4 ability for user to make a desired move
 	 * 
 	 * @param position
 	 * @param playerChar
@@ -63,7 +64,7 @@ public class TicTacToe {
 				System.out.println("Invalid Position");
 				continue;
 			}
-			if (board[position].equals(" ")) {
+			if (isFreeSpace(board, position)) {
 				board[position] = playerChar;
 				System.out.println("Your symbol entered successfully");
 				countMoves++;
@@ -77,16 +78,39 @@ public class TicTacToe {
 	}
 
 	/**
-	 * UC 6
+	 * UC 5 checking if the position is empty or not
 	 * 
+	 * @param position
 	 * @return
 	 */
-	public static int toss() {
-		return (int) Math.floor(Math.random() * 10) % 2;
+	public static boolean isFreeSpace(String[] checkBoard, int position) {
+		if (checkBoard[position].equals(" "))
+			return true;
+		return false;
 	}
 
 	/**
-	 * UC 7
+	 * UC 6 tossing to decide who will play first
+	 * 
+	 * @return
+	 */
+	public static boolean toss() {
+		final int HEADS = 0;
+//		final int TAILS = 1;
+		int toss = (int) Math.floor(Math.random() * 10) % 2;
+		System.out.println(
+				"Tossing......\nIf HEADS comes, you will play first and if TAILS comes, computer will play first.");
+		if (toss == HEADS) {
+			System.out.println("HEADS it is. So, you play first");
+			return true;
+		} else {
+			System.out.println("TAILS it is. So, computer will play first");
+			return false;
+		}
+	}
+
+	/**
+	 * UC 7 checking for win or tie or change turn
 	 * 
 	 * @param checkBoard
 	 * @param symbol
@@ -109,8 +133,7 @@ public class TicTacToe {
 	}
 
 	/**
-	 * UC 8 modified for UC 9
-	 * 
+	 * UC 8 checking if there is any wining position or not
 	 * 
 	 * @return
 	 */
@@ -118,7 +141,7 @@ public class TicTacToe {
 		String[] copyBoard = board.clone();
 
 		for (int i = 1; i < copyBoard.length; i++) {
-			if (copyBoard[i].equals(" ")) {
+			if (isFreeSpace(copyBoard, i)) {
 				copyBoard[i] = symbol;
 				if (checkWinner(copyBoard, symbol) == 1) {
 					return i;
@@ -130,101 +153,130 @@ public class TicTacToe {
 	}
 
 	/**
+	 * UC 8 checking if computer can win and returning wining position of computer
+	 * 
+	 * @return
+	 */
+	public static int checkCompWin() {
+		return winPosition(compChar);
+	}
+
+	/**
+	 * UC 9 checking if player can win and returning wining position for player
+	 * 
+	 * @return
+	 */
+	public static int checkPlayerWin() {
+		return winPosition(playerChar);
+	}
+
+	/**
+	 * UC 10 check for available corner
+	 * 
+	 * @return
+	 */
+	public static int availableCorner() {
+		int[] corners = { 1, 3, 7, 9 };
+		int corner = 0;
+		// counting number of empty corners
+		int countEmptyCorners = 0;
+		for (int i = 0; i < corners.length; i++) {
+			if (isFreeSpace(board, corners[i])) {
+				countEmptyCorners++;
+			}
+		}
+
+		if (countEmptyCorners > 0) {
+			while (true) {
+				corner = corners[(int) Math.floor(Math.random() * 10) % 4];
+				if (isFreeSpace(board, corner))
+					break;
+			}
+		}
+
+		return corner;
+	}
+
+	/**
+	 * UC 11 selecting center if available or side
+	 * 
+	 * @return
+	 */
+	public static int centreOrSide() {
+		int position = 5;
+		int[] sides = { 2, 4, 6, 8 };
+		if (isFreeSpace(board, position))
+			return position;
+		else {
+			while (true) {
+				position = sides[(int) Math.floor(Math.random() * 10) % 4];
+				if (isFreeSpace(board, position))
+					break;
+			}
+		}
+
+		return position;
+	}
+
+	/**
 	 * modified for UC 10, UC 11, UC 13
 	 */
 	public static void compMove() {
-		while (true) {
-			int position = 0;
-			int[] corners = { 1, 3, 7, 9 };
+		int nextMove = 0;
 
-			int winPosComp = winPosition(compChar);
-			int winPosPlayer = winPosition(playerChar);
+		int winPosComp = checkCompWin();
+		int winPosPlayer = checkPlayerWin();
 
-			if (winPosComp != 0) {
-				position = winPosComp;
-			} else if (winPosPlayer != 0) { // computer will choose that position only if computer is not wining
-				position = winPosPlayer;
+		if (winPosComp != 0) {
+			nextMove = winPosComp;
+		} else if (winPosPlayer != 0) { // computer will choose that position only if computer is not wining
+			nextMove = winPosPlayer;
+		} else {
+			int corner = availableCorner();
+			if (corner != 0) {
+				nextMove = corner;
 			} else {
-				// counting number of empty corners
-				int countEmptyCorners = 0;
-				for (int i = 0; i < corners.length; i++) {
-					if (board[corners[i]].equals(" ")) {
-						countEmptyCorners++;
-					}
-				}
-				// if no one is wining then selecting corner
-				if (countEmptyCorners == 0) {
-					// if corner is not available then taking center
-					if (board[5] == " ")
-						position = 5;
-					// if center is not available then taking side
-					else {
-						while (true) {
-							position = (int) Math.floor(Math.random() * 10) % 9 + 1;
-							if (board[position].equals(" "))
-								break;
-						}
-					}
-				}
-				// if corner is empty then selecting random corner
-				else {
-					while (true) {
-						position = corners[(int) Math.floor(Math.random() * 10) % 4];
-						if (board[position].equals(" "))
-							break;
-					}
-				}
-			}
-
-			if (board[position].equals(" ")) {
-				board[position] = compChar;
-				System.out.println("Computer made move.");
-				countMoves++;
-				showBoard();
-				return;
+				nextMove = centreOrSide();
 			}
 		}
+
+		board[nextMove] = compChar;
+		System.out.println("Computer made its move.");
+		countMoves++;
+		showBoard();
+
 	}
 
 	public static void main(String[] args) {
-		final int playerNum = 0;
-//		final int compNum = 1;
 		Scanner scanner = new Scanner(System.in);
 		String anotherGame;
+
 		do {
 			new TicTacToe();
-			countMoves = 0;
 			chooseChar(scanner);
-			int first = toss();
-			if (first == playerNum)
-				System.out.println("You play first");
-			else
-				System.out.println("Computer will play first");
+			boolean chance = toss();
 			showBoard();
 
 			while (true) {
-				if (first % 2 == playerNum) {
+				if (chance) {
 					makeMove(scanner);
-					first++;
-					if (checkWinner(board, playerChar) == 1) {
-						System.out.println("Congratulations!! You won this game");
-						break;
-					} else if (checkWinner(board, playerChar) == 2) {
-						System.out.println("No one won this game");
-						break;
-					}
+					chance = false;
 				}
 
 				else {
 					compMove();
-					first++;
-					if (checkWinner(board, compChar) == 1) {
-						System.out.println("COMPUTER won this game");
-						break;
-					} else if (checkWinner(board, compChar) == 2) {
-						System.out.println("No one won this game");
-						break;
-					}
+					chance = true;
+				}
+
+				if (checkWinner(board, playerChar) == 1) {
+					System.out.println("Congratulations!! You won this game");
+					break;
+				} else if (checkWinner(board, compChar) == 1) {
+					System.out.println("COMPUTER won this game");
+					break;
+				} else if (countMoves == 9) {
+					System.out.println("No one won this game");
+					break;
 				}
 			}
 			scanner.nextLine();
